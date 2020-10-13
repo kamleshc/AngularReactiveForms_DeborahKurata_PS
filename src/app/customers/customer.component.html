@@ -60,17 +60,9 @@
                   type="email"
                   placeholder="Exp: JohnDoe@domain.com"
                   formControlName="email"
-                  [ngClass]="{'is-invalid': customerForm.get('emailGroup').errors ||
-                                            ((customerForm.get('emailGroup.email').touched || 
-                                            customerForm.get('emailGroup.email').dirty) && 
-                                            !customerForm.get('emailGroup.email').valid) }" />
+                  [ngClass]="{'is-invalid': emailMessage }" />
             <span class="invalid-feedback">
-              <span *ngIf="customerForm.get('emailGroup.email').errors?.required">
-                Please enter your email address.
-              </span>
-              <span *ngIf="customerForm.get('emailGroup.email').errors?.email">
-                Please enter a valid email address.
-              </span>
+              {{ emailMessage }}
             </span>
           </div>
         </div>
@@ -101,7 +93,7 @@
       
       <div class="form-group row mb-2">
         <label class="col-md-2 col-form-label"
-               for="phoneId">Phone <span class="red">*</span></label>
+               for="phoneId">Phone <span class="red" style="display: none;">*</span></label>
         <div class="col-md-8">
           <input class="form-control"
                  id="phoneId"
@@ -126,9 +118,7 @@
               type="radio"
               formControlName="notifications"
               id="notificationEmail"
-              value="email"
-              (click)="setNotification('email')"
-            >
+              value="email">
             <label class="form-check-label" for="notificationEmail">Email</label>
           </div>
           <div class="form-check form-check-inline">
@@ -136,9 +126,7 @@
               type="radio"
               formControlName="notifications"
               id="notificationText"
-              value="text"
-              (click)="setNotification('text')"
-            >
+              value="text">
             <label class="form-check-label" for="notificationText">Text</label>
           </div>
         </div>
