@@ -3,6 +3,21 @@ import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from
 
 import { Customer } from './customer';
 
+function emailMatcher (c: AbstractControl): { [key: string]: boolean } | null {
+  const emailControl = c.get('email');
+  const confirmEmailControl = c.get('confirmEmail');
+
+  if (emailControl.pristine || confirmEmailControl.pristine) {
+    return null;
+  }
+
+  if (emailControl.value === confirmEmailControl.value) {
+    return null;
+  }
+
+  return { 'match': true };
+}
+
 function ratingRange(min: number, max: number): ValidatorFn {
   return (c: AbstractControl): { [key: string]: boolean } | null => {
     if (c.value !== null && (isNaN(c.value) || c.value < min || c.value > max)) {
@@ -27,7 +42,10 @@ export class CustomerComponent implements OnInit {
     this.customerForm = this.fb.group({ 
       firstName: ['', [Validators.required, Validators.minLength(3)]],
       lastName: ['', [Validators.required, Validators.maxLength(50)]],
-      email: ['', [Validators.required, Validators.email]],
+      emailGroup: this.fb.group({
+        email: ['', [Validators.required, Validators.email]],
+        confirmEmail: ['', [Validators.required]],
+      }, { validators: emailMatcher }),
       phone: '',
       notifications: 'email',
       rating: [null, ratingRange(1,5)],
@@ -39,7 +57,7 @@ export class CustomerComponent implements OnInit {
     //   email: new FormControl(),
     //   sendCatalog: new FormControl(true)
     // });
-  }
+  };
   
   populateTestData(): void{
     this.customerForm.patchValue({
